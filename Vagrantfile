@@ -1,3 +1,4 @@
+ENV['VAGRANT_SERVER_URL'] = 'https://vagrant.elab.pro'
 Vagrant.configure("2") do |config|
 	(1..5).each do |i|
 		config.vm.define "server#{i}" do |web|
