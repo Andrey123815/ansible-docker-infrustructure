@@ -1,0 +1,12 @@
+---
+- name: "[{{ service.name }}] Деплой сервиса"
+  community.docker.docker_swarm_service:
+    name: "{{ service.name }}"
+    image: "rabbitmq:{{ service.version }}"
+    state: present
+    networks:
+      - "{{ deploy_docker_network_name }}"
+    env:
+      - RABBITMQ_DEFAULT_USER={{ rmq.user }}
+      - RABBITMQ_DEFAULT_PASS={{ rmq.password }}
+  tags: "{{ service.name }}"

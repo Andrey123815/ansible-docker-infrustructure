@@ -1,0 +1,17 @@
+---
+- name: Soft удаление ноды из кластера
+  community.docker.docker_node:
+    hostname: "{{ swarm_leave_node }}"
+    availability: drain
+
+- name: Ожидание завершения задач и контейнеров на ноде
+  community.docker.docker_host_info:
+    containers: true
+  delegate_to: "{{ swarm_leave_node }}"
+  register: result
+  retries: 20
+  delay: 1
+  until: result.host_info.ContainersRunning == 0
+
+- name: Удаление ноды из кластера
+  ansible.builtin.command: "docker node rm {{ swarm_leave_node }}"

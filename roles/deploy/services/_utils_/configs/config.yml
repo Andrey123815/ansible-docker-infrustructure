@@ -1,0 +1,12 @@
+- name: "[{{ service.name }}] Конфигурация configs"
+  block:
+    - name: "[{{ service.name }}] Попытка создания configs"
+      include_tasks: "./config-create.yml"
+
+  rescue:
+    - name: "[{{ service.name }}] Удаление сервиса для обновления configs"
+      community.docker.docker_swarm_service:
+        name: "{{ service.name }}"
+        state: absent
+    - name: "[{{ service.name }}] Обновление configs"
+      include_tasks: "./config-create.yml"

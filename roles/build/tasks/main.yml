@@ -1,0 +1,27 @@
+---
+- name: Клонирование репозиториев
+  ansible.builtin.git:
+    repo: "https://github.com/Andrey123815/docker-demo-test.git"
+    dest: "{{ git_folder }}"
+    version: block-14
+
+- name: Сборка образов
+  community.docker.docker_image:
+    name: "{{ docker_registry }}/{{ service.name }}"
+    tag: "{{ service.version }}"
+    push: true
+    force_source: true
+    force_tag: true
+    build:
+      path: "{{ git_folder }}"
+      dockerfile: "{{ git_folder }}/apps/{{ service.name }}/Dockerfile"
+    state: present
+    source: build
+  loop: "{{ build_services }}"
+  loop_control:
+    loop_var: service
+
+- name: Удаляем репозиторий
+  ansible.builtin.file:
+    state: absent
+    path: "{{ git_folder }}"

@@ -1,0 +1,11 @@
+---
+- name: Присоединение нового участника к swarm кластеру
+  community.docker.docker_swarm:
+    state: join
+    remote_addrs: "{{ swarm_cluster_addr }}"
+    join_token: >
+      {{
+        hostvars['server1']['ansible_facts']['join_token_worker']
+        if swarm_join_member_role == 'worker' else
+        hostvars['server1']['ansible_facts']['join_token_manager']
+      }}

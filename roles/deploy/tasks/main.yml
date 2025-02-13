@@ -1,0 +1,11 @@
+---
+- name: Создание Docker Network
+  community.docker.docker_network:
+    name: "{{ deploy_docker_network_name }}"
+    driver: overlay
+
+- name: Выкладка сервисов
+  ansible.builtin.include_tasks: "../services/{{ service.name }}/service.yml"
+  vars:
+    service: "{{ item }}"
+  loop: "{{ all_services }}"

@@ -1,0 +1,30 @@
+---
+- name: User
+  hosts: demo
+  vars:
+    user: andrey123
+  tasks:
+    - name: Preconfig
+      block:
+        - name: Sleep
+          ansible.builtin.command: /bin/sleep 15
+          async: 1000
+          poll: 0
+          register: sleep
+        - name: Debug
+          ansible.builtin.debug:
+            var: sleep
+        - name: Echo
+          ansible.builtin.command: echo "123"
+      become: true
+    - name: Check sleep status
+      ansible.builtin.async_status:
+        jid: "{{ sleep.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 1
+      become: true
+    - name: Reboot
+      ansible.builtin.reboot:
+        reboot_timeout: 0

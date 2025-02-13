@@ -18,14 +18,14 @@
               - gnupg
               - lsb-release
             update-cache: yes
-            cache_valid_time: 86400 
+            cache_valid_time: 86400
 
         - name: Download Docker repo key
           apt_key:
             url: https://download.docker.com/linux/ubuntu/gpg
             keyring: /usr/share/keyrings/docker-archive-keyring.gpg
             state: present
-        
+
         - name: Set permissions on Docker repo key
           file:
             path: /usr/share/keyrings/docker-archive-keyring.gpg
@@ -56,7 +56,7 @@
             state: restarted
             enabled: yes
       become: yes
-      
+
     - name: Install Docker-compose
       block:
         - name: Get latest Docker-compose version

@@ -1,0 +1,42 @@
+---
+rmq_defaults:
+  - name: AMQP_EXCHANGE
+    value: xchg_integrations
+  - name: AMQP_USER
+    value: "{{rmq.user}}"
+  - name: AMQP_PASSWORD
+    value: "{{ rmq.password }}"
+  - name: AMQP_HOSTNAME
+    value: rmq
+
+docker_registry: localhost:5000
+
+git_folder: /home/vagrant/docker
+
+all_services:
+  - name: api
+    version: latest
+  - name: rmq
+    version: 3-management
+  - name: converter
+    version: latest
+  - name: app
+    version: latest
+  - name: nginx
+    version: latest
+
+non_build_services:
+  - name: rmq
+    version: 3-management
+  - name: nginx
+    version: latest
+
+build_services: "{{ all_services | difference(non_build_services) }}"
+
+configs:
+  converter:
+    queue: q_imageProcessor
+
+swarm_cluster_addr: 10.11.10.1
+
+swarm_tokens_dir: .swarm-tokens

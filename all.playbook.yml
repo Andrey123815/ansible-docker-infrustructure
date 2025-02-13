@@ -1,0 +1,33 @@
+---
+- name: Deploy Servers Configuration
+  hosts: deploy
+  roles:
+    - role: preconfig
+      tags: preconfig
+    - role: build
+      tags: build
+    - role: deploy
+      tags: deploy
+    - role: swarm_init
+      tags: swarm_init
+    - role: swarm_leave
+      swarm_leave_node: server4
+      tags: swarm_leave
+
+- name: Manager Servers Configuration
+  hosts: managers
+  roles:
+    - role: preconfig
+      tags: preconfig
+    - role: swarm_join
+      swarm_join_member_role: manager
+      tags: swarm_join
+
+- name: Worker Servers Configuration
+  hosts: workers
+  roles:
+    - role: preconfig
+      tags: preconfig
+    - role: swarm_join
+      swarm_join_member_role: worker
+      tags: swarm_join
